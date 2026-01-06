@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reddi2Drive – Roundabout Test</title>
+  <meta name="description" content="Reddi2Drive roundabout knowledge test (UK). Instant feedback, score, and review." />
+  <style>
+    :root{
+      --bg:#0b1220; --card:#121a2b; --text:#eef3ff; --muted:#9fb0cc;
+      --accent:#4aa3ff; --good:#2bd576; --bad:#ff4d4d; --border:rgba(255,255,255,.10);
+      --shadow:0 12px 30px rgba(0,0,0,.35); --r:16px; --max:820px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 800px at 20% 0%, rgba(74,163,255,.18), transparent 55%),
+        radial-gradient(1200px 800px at 80% 0%, rgba(43,213,118,.10), transparent 55%),
+        var(--bg);
+    }
+    header{max-width:var(--max); margin:0 auto; padding:22px 16px 8px}
+    h1{margin:0; font-size:20px; letter-spacing:.2px}
+    main{max-width:var(--max); margin:0 auto; padding:8px 16px 28px}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.03), transparent 40%), var(--card);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      border-radius:var(--r);
+      padding:18px;
+      margin:12px 0;
+    }
+    .row{display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+    .pill{border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px; color:var(--muted)}
+    .muted{color:var(--muted)}
+    .big{font-size:28px; margin:0}
+    .btn{
+      border-radius:14px; border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      color:var(--text); padding:11px 14px; cursor:pointer; font-weight:700;
+    }
+    .btn.primary{
+      background:linear-gradient(90deg, rgba(74,163,255,.95), rgba(74,163,255,.55));
+      border-color:rgba(74,163,255,.55); color:#07101d;
+    }
+    .btn.ghost{background:transparent}
+    .btn:disabled{opacity:.5; cursor:not-allowed}
+    .tag{display:inline-block; font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid var(--border); color:var(--muted)}
+    .progress{height:10px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; border:1px solid var(--border); margin-top:12px}
+    .progress > div{height:100%; width:0%; background:linear-gradient(90deg, var(--accent), rgba(74,163,255,.55)); transition:width .25s ease}
+    .qTitle{margin:10px 0 12px; font-size:18px}
+    .answers{display:grid; gap:10px; margin-top:10px}
+    .option{
+      text-align:left; width:100%;
+      padding:12px 12px; border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      color:var(--text); cursor:pointer;
+      transition:transform .05s ease, background .15s ease, border-color .15s ease;
+    }
+    .option:hover{background:rgba(255,255,255,.06)}
+    .option:active{transform:scale(.995)}
+    .option[disabled]{cursor:not-allowed; opacity:.95}
+    .feedback{margin-top:12px; padding:12px; border-radius:14px; border:1px solid var(--border); background:rgba(255,255,255,.03)}
+    .feedback.good{border-color:rgba(43,213,118,.35); background:rgba(43,213,118,.08)}
+    .feedback.bad{border-color:rgba(255,77,77,.35); background:rgba(255,77,77,.08)}
+    .feedback .title{display:flex; justify-content:space-between; gap:10px; align-items:center; font-weight:800; margin-bottom:6px}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    .small{font-size:12px; color:var(--muted)}
+    .kpi{display:flex; gap:12px; flex-wrap:wrap; margin-top:10px}
+    .box{flex:1 1 160px; border:1px solid var(--border); background:rgba(255,255,255,.03); border-radius:14px; padding:12px}
+    .box .n{font-size:22px; font-weight:900; margin:0}
+    .box .l{margin:2px 0 0; color:var(--muted); font-size:12px}
+    .imgwrap{
+      margin-top:10px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.02);
+      border-radius:14px;
+      overflow:hidden;
+    }
+    .imgwrap img{display:block; width:100%; height:auto}
+    .hint{border-left:3px solid rgba(255,204,102,.7); padding-left:10px; margin-top:10px; color:var(--muted); font-size:13px}
+    a{color:var(--accent)}
+    .reviewItem{border-top:1px solid var(--border); padding-top:12px; margin-top:12px}
+    .zoomOverlay{
+      position:fixed; inset:0; background:rgba(0,0,0,.75);
+      display:none; align-items:center; justify-content:center; padding:16px; z-index:9999;
+    }
+    .zoomOverlay img{
+      max-width:min(980px, 96vw);
+      max-height:90vh;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.18);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="row">
+      <h1>Reddi2Drive – Roundabout Test</h1>
+      <div class="pill" id="pill">Fresh question bank • instant feedback</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" id="startScreen">
+      <p class="big">Roundabouts: test yourself</p>
+      <p class="muted">Instant feedback after every question, then a score + review at the end.</p>
+
+      <div class="kpi">
+        <div class="box">
+          <p class="n" id="bankCount">—</p>
+          <p class="l">Questions in bank</p>
+        </div>
+        <div class="box">
+          <p class="n" id="perAttempt">10</p>
+          <p class="l">Questions per attempt</p>
+        </div>
+        <div class="box">
+          <p class="n" id="bestScore">—</p>
+          <p class="l">Best score (this device)</p>
+        </div>
+      </div>
+
+      <div class="hint">
+        Tip: When you’re ready, we can add visuals per question (stored in <strong>/img</strong>) and even “tap to zoom” diagrams.
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="startBtn">Start test</button>
+        <button class="btn ghost" id="shuffleBtn" title="Shuffle the bank order">Shuffle bank</button>
+        <button class="btn" id="resetBestBtn" title="Clears your saved best score">Reset best</button>
+      </div>
+
+      <p class="small" style="margin-top:10px">
+        UK guidance: always follow signs/markings and local lane directions.
+      </p>
+    </section>
+
+    <section class="card" id="quizScreen" style="display:none">
+      <div class="row">
+        <div>
+          <span class="tag" id="catTag">Category</span>
+          <span class="muted" id="counter">1 / 10</span>
+        </div>
+        <div class="muted" id="scoreMini">Score: 0</div>
+      </div>
+
+      <div class="progress"><div id="bar"></div></div>
+
+      <h2 class="qTitle" id="qText">…</h2>
+
+      <div class="imgwrap" id="imgWrap" style="display:none">
+        <img id="qImg" alt="Question visual (tap to zoom)" />
+      </div>
+      <p class="small" id="imgHint" style="display:none; margin:8px 2px 0">Tap the image to zoom.</p>
+
+      <div class="answers" id="answers"></div>
+
+      <div class="feedback" id="feedback" style="display:none"></div>
+
+      <div class="actions">
+        <button class="btn" id="backBtn">Back</button>
+        <button class="btn primary" id="nextBtn" disabled>Next</button>
+        <button class="btn ghost" id="quitBtn">Quit</button>
+      </div>
+    </section>
+
+    <section class="card" id="resultsScreen" style="display:none">
+      <p class="big" id="resultTitle">Results</p>
+      <p class="muted" id="resultSub">…</p>
+
+      <div class="kpi">
+        <div class="box">
+          <p class="n" id="finalScore">0 / 10</p>
+          <p class="l">Score</p>
+        </div>
+        <div class="box">
+          <p class="n" id="finalPercent">0%</p>
+          <p class="l">Percentage</p>
+        </div>
+        <div class="box">
+          <p class="n" id="finalTime">—</p>
+          <p class="l">Time</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="retryBtn">Try again</button>
+        <button class="btn" id="reviewBtn">Review</button>
+      </div>
+
+      <p class="small" style="margin-top:10px">
+        Tip: Add to Home Screen (Safari → Share → Add to Home Screen).
+      </p>
+    </section>
+
+    <section class="card" id="reviewScreen" style="display:none">
+      <p class="big">Review</p>
+      <p class="muted">Your choice vs the correct answer, plus the explanation.</p>
+      <div id="reviewList"></div>
+
+      <div class="actions">
+        <button class="btn primary" id="backToResultsBtn">Back to results</button>
+        <button class="btn" id="newAttemptBtn">New attempt</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="zoomOverlay" id="zoomOverlay" aria-hidden="true">
+    <img id="zoomImg" alt="Zoomed question visual" />
+  </div>
+
+<script>
+const QUESTION_BANK = [
+  {
+    id: "signals-01",
+    category: "Roundabouts – Signals",
+    q: "When approaching a standard roundabout, when should you normally signal left?",
+    choices: [
+      "On approach to the roundabout",
+      "Just before you reach your exit",
+      "Only after you have exited",
+      "You should never signal on a roundabout"
+    ],
+    correct: 1,
+    explain: "You normally signal left after passing the exit before the one you intend to take, to clearly show other road users that you are leaving the roundabout.",
+    image: ""
+  },
+  {
+    id: "priority-01",
+    category: "Roundabouts – Priority",
+    q: "Who has priority on a typical UK roundabout?",
+    choices: [
+      "Traffic approaching from the left",
+      "Traffic approaching from the right",
+      "Traffic already on the roundabout",
+      "Traffic on the major road"
+    ],
+    correct: 2,
+    explain: "On most UK roundabouts, traffic already on the roundabout has priority. Drivers must give way to traffic from the right before entering.",
+    image: ""
+  },
+  {
+    id: "lanes-01",
+    category: "Roundabouts – Lane Discipline",
+    q: "Which lane should you normally use when turning right at a roundabout unless signs or markings say otherwise?",
+    choices: [
+      "Left-hand lane",
+      "Middle lane",
+      "Right-hand lane",
+      "Any available lane"
+    ],
+    correct: 2,
+    explain: "For a right turn (often exits beyond 12 o’clock), you should normally use the right-hand lane unless road markings or signs indicate otherwise.",
+    image: ""
+  },
+  {
+    id: "planning-01",
+    category: "Roundabouts – Planning",
+    q: "What should you do if you miss your exit on a roundabout?",
+    choices: [
+      "Stop immediately",
+      "Reverse back to the exit",
+      "Signal left and cut across lanes",
+      "Continue around the roundabout safely"
+    ],
+    correct: 3,
+    explain: "If you miss your exit, continue around the roundabout and take the next safe opportunity to leave. Never stop or reverse on a roundabout.",
+    image: ""
+  },
+  {
+    id: "mspsl-01",
+    category: "Roundabouts – Observation",
+    q: "When approaching a roundabout, what does the MSPSL routine help you do?",
+    choices: [
+      "Decide who has priority",
+      "Choose the correct lane and speed",
+      "Remember road signs",
+      "Judge the size of the roundabout"
+    ],
+    correct: 1,
+    explain: "MSPSL (Mirrors, Signal, Position, Speed, Look) helps you approach safely: plan your lane position, adjust speed, and be ready to give way if needed.",
+    image: ""
+  },
+  {
+    id: "mini-01",
+    category: "Roundabouts – Mini Roundabouts",
+    q: "At a mini-roundabout, how should you normally drive?",
+    choices: [
+      "Drive straight over the centre if clear",
+      "Pass around the painted centre",
+      "Treat it like a junction",
+      "Give way to the left"
+    ],
+    correct: 1,
+    explain: "You should normally drive around the painted centre of a mini-roundabout and give way to traffic coming from the right.",
+    image: ""
+  },
+  {
+    id: "markings-01",
+    category: "Roundabouts – Road Markings",
+    q: "What should you do if road markings on a roundabout contradict the usual lane rules?",
+    choices: [
+      "Follow the Highway Code rules only",
+      "Ignore the markings",
+      "Follow the road markings",
+      "Stop and wait"
+    ],
+    correct: 2,
+    explain: "Road signs and lane arrows/markings take priority over general rules. Follow them to keep lane discipline and avoid conflict.",
+    image: ""
+  },
+  {
+    id: "awareness-01",
+    category: "Roundabouts – Awareness",
+    q: "Why is it important to check mirrors when changing lanes on a roundabout?",
+    choices: [
+      "To check your speed",
+      "To see road signs",
+      "To avoid cutting up other vehicles",
+      "To confirm your exit number"
+    ],
+    correct: 2,
+    explain: "Mirror checks help you make sure it’s safe before changing lane, and prevent you cutting across vehicles (or cyclists) already alongside.",
+    image: ""
+  }
+];
+
+const QS_PER_ATTEMPT_DEFAULT = 10;
+
+const el = (id) => document.getElementById(id);
+const startScreen = el("startScreen");
+const quizScreen = el("quizScreen");
+const resultsScreen = el("resultsScreen");
+const reviewScreen = el("reviewScreen");
+
+const startBtn = el("startBtn");
+const shuffleBtn = el("shuffleBtn");
+const resetBestBtn = el("resetBestBtn");
+
+const bankCount = el("bankCount");
+const perAttempt = el("perAttempt");
+const bestScore = el("bestScore");
+
+const catTag = el("catTag");
+const counter = el("counter");
+const qText = el("qText");
+const answers = el("answers");
+const feedback = el("feedback");
+const nextBtn = el("nextBtn");
+const backBtn = el("backBtn");
+const quitBtn = el("quitBtn");
+const bar = el("bar");
+const scoreMini = el("scoreMini");
+
+const imgWrap = el("imgWrap");
+const qImg = el("qImg");
+const imgHint = el("imgHint");
+const zoomOverlay = el("zoomOverlay");
+const zoomImg = el("zoomImg");
+
+const resultTitle = el("resultTitle");
+const resultSub = el("resultSub");
+const finalScore = el("finalScore");
+const finalPercent = el("finalPercent");
+const finalTime = el("finalTime");
+
+const retryBtn = el("retryBtn");
+const reviewBtn = el("reviewBtn");
+
+const reviewList = el("reviewList");
+const backToResultsBtn = el("backToResultsBtn");
+const newAttemptBtn = el("newAttemptBtn");
+
+const STORAGE_BEST = "r2d_roundabout_best";
+
+let attempt = [];
+let idx = 0;
+let score = 0;
+let picked = [];
+let startedAt = null;
+let qsPerAttempt = QS_PER_ATTEMPT_DEFAULT;
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[s]));
+}
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function show(screen){
+  startScreen.style.display="none";
+  quizScreen.style.display="none";
+  resultsScreen.style.display="none";
+  reviewScreen.style.display="none";
+  screen.style.display="block";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function loadStats(){
+  bankCount.textContent = String(QUESTION_BANK.length);
+  qsPerAttempt = Math.min(QS_PER_ATTEMPT_DEFAULT, QUESTION_BANK.length);
+  perAttempt.textContent = String(qsPerAttempt);
+
+  const best = Number(localStorage.getItem(STORAGE_BEST) || 0);
+  bestScore.textContent = best ? `${best} / ${qsPerAttempt}` : "—";
+}
+function buildAttempt(){
+  const pool = shuffle(QUESTION_BANK);
+  const selected = pool.slice(0, qsPerAttempt).map(q => {
+    const mapped = q.choices.map((text, i) => ({text, originalIndex:i}));
+    const shuffled = shuffle(mapped);
+    const newCorrect = shuffled.findIndex(x => x.originalIndex === q.correct);
+    return {...q, choices: shuffled.map(x => x.text), correct: newCorrect};
+  });
+
+  attempt = selected;
+  idx = 0;
+  score = 0;
+  picked = Array(attempt.length).fill(null);
+  startedAt = new Date();
+}
+function setImage(src){
+  if (!src){
+    imgWrap.style.display = "none";
+    imgHint.style.display = "none";
+    qImg.removeAttribute("src");
+    return;
+  }
+  imgWrap.style.display = "block";
+  imgHint.style.display = "block";
+  qImg.src = src;
+}
+qImg.addEventListener("click", () => {
+  if (!qImg.getAttribute("src")) return;
+  zoomImg.src = qImg.src;
+  zoomOverlay.style.display = "flex";
+  zoomOverlay.setAttribute("aria-hidden","false");
+});
+zoomOverlay.addEventListener("click", () => {
+  zoomOverlay.style.display = "none";
+  zoomOverlay.setAttribute("aria-hidden","true");
+  zoomImg.removeAttribute("src");
+});
+
+function render(){
+  const q = attempt[idx];
+  catTag.textContent = q.category || "Roundabouts";
+  counter.textContent = `${idx+1} / ${attempt.length}`;
+  qText.textContent = q.q;
+  scoreMini.textContent = `Score: ${score}`;
+  bar.style.width = `${Math.round((idx/attempt.length)*100)}%`;
+
+  setImage(q.image);
+
+  answers.innerHTML = "";
+  feedback.style.display = "none";
+  feedback.className = "feedback";
+  nextBtn.disabled = true;
+
+  q.choices.forEach((choiceText, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "option";
+    b.textContent = choiceText;
+    b.addEventListener("click", () => choose(i));
+    answers.appendChild(b);
+  });
+
+  if (picked[idx]){
+    lockAnswered(picked[idx].choiceIndex);
+    showFeedback(picked[idx].choiceIndex);
+    nextBtn.disabled = false;
+    bar.style.width = `${Math.round(((idx+1)/attempt.length)*100)}%`;
+  }
+}
+function lockAnswered(selectedIndex){
+  [...answers.querySelectorAll("button.option")].forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === selectedIndex){
+      btn.style.borderColor = "rgba(255,255,255,.25)";
+      btn.style.background = "rgba(255,255,255,.06)";
+    }
+  });
+}
+function showFeedback(selectedIndex){
+  const q = attempt[idx];
+  const correct = q.correct;
+  const isCorrect = selectedIndex === correct;
+  const title = isCorrect ? "✅ Correct" : "❌ Not quite";
+  const correctText = q.choices[correct];
+
+  feedback.style.display = "block";
+  feedback.className = "feedback " + (isCorrect ? "good" : "bad");
+  feedback.innerHTML = `
+    <div class="title">
+      <span>${title}</span>
+      <span class="small">Correct: <strong>${escapeHtml(correctText)}</strong></span>
+    </div>
+    <div class="muted">${escapeHtml(q.explain || "")}</div>
+  `;
+}
+function choose(selectedIndex){
+  const q = attempt[idx];
+  const isCorrect = selectedIndex === q.correct;
+
+  if (!picked[idx]){
+    if (isCorrect) score += 1;
+    picked[idx] = {choiceIndex: selectedIndex, isCorrect};
+  }
+
+  lockAnswered(selectedIndex);
+  showFeedback(selectedIndex);
+  nextBtn.disabled = false;
+  bar.style.width = `${Math.round(((idx+1)/attempt.length)*100)}%`;
+  scoreMini.textContent = `Score: ${score}`;
+}
+function finish(){
+  const total = attempt.length;
+  const pct = Math.round((score/total)*100);
+  const elapsedMs = new Date() - startedAt;
+  const mins = Math.floor(elapsedMs/60000);
+  const secs = Math.floor((elapsedMs%60000)/1000);
+  const timeStr = `${mins}m ${secs}s`;
+
+  finalScore.textContent = `${score} / ${total}`;
+  finalPercent.textContent = `${pct}%`;
+  finalTime.textContent = timeStr;
+
+  let title, sub;
+  if (pct >= 90){
+    title = "Strong roundabout knowledge 💪";
+    sub = "Keep it sharp by practising with real lane markings and signage.";
+  } else if (pct >= 70){
+    title = "Good work — a few gaps to tighten up ✅";
+    sub = "Revisit the ones you missed and focus on timing of signals + lane discipline.";
+  } else if (pct >= 50){
+    title = "Not bad — let’s build consistency 🔁";
+    sub = "Slow it down on approach, get the routine right, and make decisions earlier.";
+  } else {
+    title = "Let’s nail the foundations 🧱";
+    sub = "Read the explanations carefully, then try again. Consistency beats guessing.";
+  }
+  resultTitle.textContent = title;
+  resultSub.textContent = sub;
+
+  const best = Number(localStorage.getItem(STORAGE_BEST) || 0);
+  if (score > best){
+    localStorage.setItem(STORAGE_BEST, String(score));
+  }
+  loadStats();
+
+  show(resultsScreen);
+}
+function buildReview(){
+  reviewList.innerHTML = "";
+  attempt.forEach((q, i) => {
+    const p = picked[i];
+    const you = p ? q.choices[p.choiceIndex] : "—";
+    const correct = q.choices[q.correct];
+    const ok = p ? p.isCorrect : false;
+
+    const div = document.createElement("div");
+    div.className = "reviewItem";
+    div.innerHTML = `
+      <div class="row">
+        <div>
+          <span class="tag">${escapeHtml(q.category || "Roundabouts")}</span>
+          <strong>${escapeHtml(q.q)}</strong>
+        </div>
+        <div style="font-weight:900; color:${ok ? 'var(--good)' : 'var(--bad)'}">${ok ? "Correct" : "Wrong"}</div>
+      </div>
+      ${q.image ? `<div class="imgwrap" style="margin-top:10px"><img alt="Question visual" src="${escapeHtml(q.image)}"></div>` : ""}
+      <div class="small" style="margin-top:8px">
+        <div><span class="muted">You chose:</span> <strong>${escapeHtml(you)}</strong></div>
+        <div><span class="muted">Correct:</span> <strong>${escapeHtml(correct)}</strong></div>
+      </div>
+      <div class="hint">${escapeHtml(q.explain || "")}</div>
+    `;
+    reviewList.appendChild(div);
+  });
+}
+
+startBtn.addEventListener("click", () => {
+  loadStats();
+  buildAttempt();
+  show(quizScreen);
+  render();
+});
+shuffleBtn.addEventListener("click", () => {
+  const temp = shuffle(QUESTION_BANK);
+  QUESTION_BANK.length = 0;
+  temp.forEach(x => QUESTION_BANK.push(x));
+  loadStats();
+});
+resetBestBtn.addEventListener("click", () => {
+  localStorage.removeItem(STORAGE_BEST);
+  loadStats();
+});
+
+nextBtn.addEventListener("click", () => {
+  if (idx < attempt.length - 1){
+    idx += 1;
+    render();
+  } else {
+    finish();
+  }
+});
+backBtn.addEventListener("click", () => {
+  if (idx > 0){
+    idx -= 1;
+    render();
+  } else {
+    show(startScreen);
+  }
+});
+quitBtn.addEventListener("click", () => show(startScreen));
+retryBtn.addEventListener("click", () => {
+  buildAttempt();
+  show(quizScreen);
+  render();
+});
+reviewBtn.addEventListener("click", () => {
+  buildReview();
+  show(reviewScreen);
+});
+backToResultsBtn.addEventListener("click", () => show(resultsScreen));
+newAttemptBtn.addEventListener("click", () => {
+  buildAttempt();
+  show(quizScreen);
+  render();
+});
+
+loadStats();
+show(startScreen);
+</script>
+</body>
+</html>
