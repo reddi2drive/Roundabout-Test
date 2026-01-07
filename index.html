@@ -218,131 +218,425 @@
 <script>
 const QUESTION_BANK = [
   {
-    id: "signals-01",
-    category: "Roundabouts – Signals",
-    q: "When approaching a standard roundabout, when should you normally signal left?",
-    choices: [
-      "On approach to the roundabout",
-      "Just before you reach your exit",
-      "Only after you have exited",
-      "You should never signal on a roundabout"
-    ],
-    correct: 1,
-    explain: "You normally signal left after passing the exit before the one you intend to take, to clearly show other road users that you are leaving the roundabout.",
-    image: ""
-  },
-  {
-    id: "priority-01",
-    category: "Roundabouts – Priority",
-    q: "Who has priority on a typical UK roundabout?",
-    choices: [
-      "Traffic approaching from the left",
-      "Traffic approaching from the right",
-      "Traffic already on the roundabout",
-      "Traffic on the major road"
-    ],
-    correct: 2,
-    explain: "On most UK roundabouts, traffic already on the roundabout has priority. Drivers must give way to traffic from the right before entering.",
-    image: ""
-  },
-  {
-    id: "lanes-01",
-    category: "Roundabouts – Lane Discipline",
-    q: "Which lane should you normally use when turning right at a roundabout unless signs or markings say otherwise?",
-    choices: [
-      "Left-hand lane",
-      "Middle lane",
-      "Right-hand lane",
-      "Any available lane"
-    ],
-    correct: 2,
-    explain: "For a right turn (often exits beyond 12 o’clock), you should normally use the right-hand lane unless road markings or signs indicate otherwise.",
-    image: ""
-  },
-  {
-    id: "planning-01",
-    category: "Roundabouts – Planning",
-    q: "What should you do if you miss your exit on a roundabout?",
-    choices: [
-      "Stop immediately",
-      "Reverse back to the exit",
-      "Signal left and cut across lanes",
-      "Continue around the roundabout safely"
-    ],
-    correct: 3,
-    explain: "If you miss your exit, continue around the roundabout and take the next safe opportunity to leave. Never stop or reverse on a roundabout.",
-    image: ""
-  },
-  {
-    id: "mspsl-01",
-    category: "Roundabouts – Observation",
-    q: "When approaching a roundabout, what does the MSPSL routine help you do?",
-    choices: [
-      "Decide who has priority",
-      "Choose the correct lane and speed",
-      "Remember road signs",
-      "Judge the size of the roundabout"
-    ],
-    correct: 1,
-    explain: "MSPSL (Mirrors, Signal, Position, Speed, Look) helps you approach safely: plan your lane position, adjust speed, and be ready to give way if needed.",
-    image: ""
-  },
-  {
-    id: "mini-01",
-    category: "Roundabouts – Mini Roundabouts",
-    q: "At a mini-roundabout, how should you normally drive?",
-    choices: [
-      "Drive straight over the centre if clear",
-      "Pass around the painted centre",
-      "Treat it like a junction",
-      "Give way to the left"
-    ],
-    correct: 1,
-    explain: "You should normally drive around the painted centre of a mini-roundabout and give way to traffic coming from the right.",
-    image: ""
-  },
-  {
-    id: "markings-01",
-    category: "Roundabouts – Road Markings",
-    q: "What should you do if road markings on a roundabout contradict the usual lane rules?",
-    choices: [
-      "Follow the Highway Code rules only",
-      "Ignore the markings",
-      "Follow the road markings",
-      "Stop and wait"
-    ],
-    correct: 2,
-    explain: "Road signs and lane arrows/markings take priority over general rules. Follow them to keep lane discipline and avoid conflict.",
-    image: ""
-  },
-  {
-    id: "awareness-01",
-    category: "Roundabouts – Awareness",
-    q: "Why is it important to check mirrors when changing lanes on a roundabout?",
-    choices: [
-      "To check your speed",
-      "To see road signs",
-      "To avoid cutting up other vehicles",
-      "To confirm your exit number"
-    ],
-    correct: 2,
-    explain: "Mirror checks help you make sure it’s safe before changing lane, and prevent you cutting across vehicles (or cyclists) already alongside.",
-    image: ""
-  },
-  {
-    id: "signals-02",
-    category: "Roundabouts – Signals",
-    q: "This sign shows a roundabout ahead with the exit layout. What signal should you normally give if you intend to take the exit shown to the right?",
-    choices: [
-      "No signal on approach, signal left after passing the exit before yours",
-      "Signal left on approach and keep it on",
-      "Signal right on approach, then signal left to exit",
-      "Signal right only after entering the roundabout"
-    ],
-    correct: 2,
-    explain: "If you intend to take an exit to the right, you should normally signal right on approach to the roundabout. After passing the exit before the one you want, you should then signal left to show that you are leaving the roundabout.",
-    image: "RA1.png"
-  }
+  id: "ra-gen-01",
+  category: "Roundabouts – General",
+  q: "Who has priority at a standard UK roundabout unless road signs or markings indicate otherwise?",
+  choices: [
+    "Traffic approaching the roundabout from the left",
+    "Traffic travelling straight ahead",
+    "Traffic approaching the roundabout from the right",
+    "Traffic already signalling to leave"
+  ],
+  correct: 2,
+  explain: "At most roundabouts, you must give priority to traffic approaching from the right unless signs or road markings tell you otherwise.",
+  image: ""
+},
+{
+  id: "ra-gen-02",
+  category: "Roundabouts – General",
+  q: "What should you do if traffic lights at a roundabout are not working?",
+  choices: [
+    "Proceed slowly without stopping",
+    "Treat the roundabout as if no traffic lights are present and follow normal priority rules",
+    "Stop and wait for another driver to signal",
+    "Give way to traffic approaching from the left"
+  ],
+  correct: 1,
+  explain: "If traffic lights are not working, the roundabout should be treated as an uncontrolled roundabout and normal priority rules apply.",
+  image: ""
+},
+{
+  id: "ra-gen-03",
+  category: "Roundabouts – General",
+  q: "When should you normally cancel your signal when leaving a roundabout?",
+  choices: [
+    "As soon as you pass the exit before yours",
+    "After you have exited the roundabout and your vehicle is straight",
+    "Before entering the roundabout",
+    "Just before reaching your exit"
+  ],
+  correct: 1,
+  explain: "Signals should be cancelled after you have exited the roundabout and your vehicle has straightened to avoid misleading other road users.",
+  image: ""
+},
+{
+  id: "ra-gen-04",
+  category: "Roundabouts – General",
+  q: "What is the main purpose of lane markings on a roundabout?",
+  choices: [
+    "To show pedestrian crossing areas",
+    "To control vehicle speed",
+    "To guide drivers into the correct lane for their intended exit",
+    "To indicate stopping points"
+  ],
+  correct: 2,
+  explain: "Lane markings help drivers choose the correct lane for their exit and maintain safe, predictable positioning on the roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-05",
+  category: "Roundabouts – General",
+  q: "What should you do if you realise you are in the wrong lane on a roundabout?",
+  choices: [
+    "Change lanes suddenly if there is a gap",
+    "Reverse back to the correct lane",
+    "Continue safely in your lane and follow the road ahead",
+    "Stop immediately and indicate"
+  ],
+  correct: 2,
+  explain: "If you are in the wrong lane, you should continue safely and follow the road ahead rather than making a sudden or dangerous manoeuvre.",
+  image: ""
+},
+{
+  id: "ra-gen-06",
+  category: "Roundabouts – General",
+  q: "When approaching a roundabout, what should you do before entering?",
+  choices: [
+    "Accelerate to match the speed of traffic on the roundabout",
+    "Stop unless the road ahead is completely clear",
+    "Give priority to traffic already on the roundabout",
+    "Signal left regardless of your intended exit"
+  ],
+  correct: 2,
+  explain: "You must give priority to traffic already on the roundabout unless road signs or markings indicate otherwise.",
+  image: ""
+},
+{
+  id: "ra-gen-07",
+  category: "Roundabouts – General",
+  q: "Which mirror check is most important immediately before changing lanes on a roundabout?",
+  choices: [
+    "Interior mirror only",
+    "Left door mirror only",
+    "Right door mirror only",
+    "Interior and appropriate door mirror"
+  ],
+  correct: 3,
+  explain: "Before changing lanes, you should check the interior mirror and the appropriate door mirror to ensure it is safe to do so.",
+  image: ""
+},
+{
+  id: "ra-gen-08",
+  category: "Roundabouts – General",
+  q: "What does a blue circular sign showing white curved arrows mean?",
+  choices: [
+    "A mini-roundabout",
+    "A one-way street",
+    "Traffic must circulate in the direction shown at a roundabout",
+    "Give way ahead"
+  ],
+  correct: 2,
+  explain: "This blue circular sign indicates a mandatory roundabout where traffic must circulate in the direction shown. You must still give way to traffic approaching from the right unless signs or road markings indicate otherwise. Mini-roundabouts are identified by their central road marking, not the sign itself.",
+  image: ""
+},
+{
+  id: "ra-gen-09",
+  category: "Roundabouts – General",
+  q: "How should you normally approach a roundabout when traffic is flowing freely?",
+  choices: [
+    "At a speed that allows you to stop safely if required",
+    "As quickly as possible to avoid hesitation",
+    "By stopping at the give way line every time",
+    "By matching the speed of the fastest vehicle"
+  ],
+  correct: 0,
+  explain: "You should approach at a safe speed that allows you to stop if necessary while maintaining good observation.",
+  image: ""
+},
+{
+  id: "ra-gen-10",
+  category: "Roundabouts – General",
+  q: "Why is good observation particularly important when approaching a roundabout?",
+  choices: [
+    "Because traffic may be approaching from multiple directions",
+    "Because roundabouts always have traffic lights",
+    "Because pedestrians have priority on the roundabout",
+    "Because signalling is not required"
+  ],
+  correct: 0,
+  explain: "Roundabouts involve traffic from multiple directions, so effective observation is essential to judge gaps and priority safely.",
+  image: ""
+}
+{
+  id: "ra-gen-11",
+  category: "Roundabouts – General",
+  q: "When should you normally signal right at a roundabout?",
+  choices: [
+    "When taking the first exit",
+    "When going straight ahead",
+    "When turning right or making a full turn",
+    "Only after passing the exit before yours"
+  ],
+  correct: 2,
+  explain: "You should signal right when turning right or making a full turn at a roundabout to clearly indicate your intention to other road users.",
+  image: ""
+},
+{
+  id: "ra-gen-12",
+  category: "Roundabouts – General",
+  q: "What should you do if a large vehicle is signalling left but positioned to the right on a roundabout?",
+  choices: [
+    "Overtake on the left if there is space",
+    "Assume it is signalling incorrectly and proceed",
+    "Give it extra space and do not attempt to pass",
+    "Sound your horn to warn them"
+  ],
+  correct: 2,
+  explain: "Large vehicles may need extra room to manoeuvre on roundabouts, so you should give them space and not attempt to pass.",
+  image: ""
+},
+{
+  id: "ra-gen-13",
+  category: "Roundabouts – General",
+  q: "What is the main risk of signalling incorrectly on a roundabout?",
+  choices: [
+    "It may confuse or mislead other road users",
+    "It will result in an automatic driving test fail",
+    "It causes traffic lights to change",
+    "It increases fuel consumption"
+  ],
+  correct: 0,
+  explain: "Incorrect signalling can mislead other road users and increase the risk of collisions at a roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-14",
+  category: "Roundabouts – General",
+  q: "On approach to a roundabout, why should you adjust your speed early?",
+  choices: [
+    "To make room for vehicles behind you",
+    "To allow time for observation and decision-making",
+    "To avoid using the brakes",
+    "To match the speed of traffic exiting"
+  ],
+  correct: 1,
+  explain: "Reducing speed early allows you time to observe, assess priority, and decide whether it is safe to enter the roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-15",
+  category: "Roundabouts – General",
+  q: "What should you do if another driver hesitates when they have priority at a roundabout?",
+  choices: [
+    "Proceed immediately to assert your position",
+    "Wave them on using hand signals",
+    "Sound your horn to prompt them",
+    "Remain patient and only proceed when it is safe"
+  ],
+  correct: 3,
+  explain: "You should remain patient and only proceed when it is clearly safe, even if another driver hesitates despite having priority.",
+  image: ""
+}
+{
+  id: "ra-gen-16",
+  category: "Roundabouts – General",
+  q: "What should you do if your exit from a roundabout is blocked by stationary traffic?",
+  choices: [
+    "Enter the roundabout and wait on it",
+    "Sound your horn to encourage movement",
+    "Wait before entering until your exit is clear",
+    "Change to a different lane at the last moment"
+  ],
+  correct: 2,
+  explain: "You should not enter a roundabout unless your exit is clear, as stopping on the roundabout can cause congestion and danger.",
+  image: ""
+},
+{
+  id: "ra-gen-17",
+  category: "Roundabouts – General",
+  q: "Which road users should you be especially aware of when approaching a roundabout?",
+  choices: [
+    "Only vehicles already on the roundabout",
+    "Cyclists and motorcyclists",
+    "Only large goods vehicles",
+    "Only pedestrians"
+  ],
+  correct: 1,
+  explain: "Cyclists and motorcyclists can be harder to see, so extra observation is required when approaching and using a roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-18",
+  category: "Roundabouts – General",
+  q: "What does a mini-roundabout usually require you to do?",
+  choices: [
+    "Drive straight over the centre marking",
+    "Give way to traffic from the right",
+    "Stop at all times before entering",
+    "Signal right regardless of direction"
+  ],
+  correct: 1,
+  explain: "At a mini-roundabout, you normally give priority to traffic approaching from the right, just like a standard roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-19",
+  category: "Roundabouts – General",
+  q: "Why should you avoid overtaking on a roundabout?",
+  choices: [
+    "It is always illegal",
+    "It increases fuel consumption",
+    "It can be unpredictable and dangerous",
+    "It causes damage to road markings"
+  ],
+  correct: 2,
+  explain: "Overtaking on a roundabout is risky due to changing lanes, signalling, and vehicles entering or exiting unexpectedly.",
+  image: ""
+},
+{
+  id: "ra-gen-20",
+  category: "Roundabouts – General",
+  q: "What should you do if road markings at a roundabout are unclear or worn?",
+  choices: [
+    "Follow the vehicle in front exactly",
+    "Rely on observation and road position",
+    "Stop and wait for instructions",
+    "Ignore other traffic"
+  ],
+  correct: 1,
+  explain: "If markings are unclear, good observation and safe positioning are essential to negotiate the roundabout safely.",
+  image: ""
+},
+{
+  id: "ra-gen-21",
+  category: "Roundabouts – General",
+  q: "When driving straight ahead at a roundabout, when should you normally signal left?",
+  choices: [
+    "Before entering the roundabout",
+    "Only after exiting the roundabout",
+    "As you pass the exit before the one you intend to take",
+    "As soon as you see the roundabout"
+  ],
+  correct: 2,
+  explain: "When going straight ahead, you should signal left after passing the exit before yours to indicate you are leaving.",
+  image: ""
+},
+{
+  id: "ra-gen-22",
+  category: "Roundabouts – General",
+  q: "What should you do if pedestrians are waiting to cross at an exit of a roundabout?",
+  choices: [
+    "Maintain speed to avoid blocking traffic",
+    "Give way if they have stepped onto the crossing",
+    "Sound your horn to alert them",
+    "Ignore them as roundabouts have priority"
+  ],
+  correct: 1,
+  explain: "You must give way to pedestrians who have already stepped onto a crossing when exiting a roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-23",
+  category: "Roundabouts – General",
+  q: "Why is lane discipline important on multi-lane roundabouts?",
+  choices: [
+    "To reduce fuel use",
+    "To make signalling unnecessary",
+    "To help traffic lights operate",
+    "To reduce conflict and confusion with other road users"
+  ],
+  correct: 3,
+  explain: "Correct lane discipline helps reduce confusion and conflict, allowing traffic to flow safely and predictably.",
+  image: ""
+},
+{
+  id: "ra-gen-24",
+  category: "Roundabouts – General",
+  q: "What is the safest action if you miss your intended exit on a roundabout?",
+  choices: [
+    "Stop and reverse carefully",
+    "Turn sharply across lanes",
+    "Continue around and take the next exit",
+    "Signal and stop on the roundabout"
+  ],
+  correct: 2,
+  explain: "If you miss your exit, you should continue around the roundabout and take the next safe exit.",
+  image: ""
+},
+{
+  id: "ra-gen-25",
+  category: "Roundabouts – General",
+  q: "Why should you avoid cutting across lanes when exiting a roundabout?",
+  choices: [
+    "It increases tyre wear",
+    "It may conflict with other vehicles using their correct lane",
+    "It delays traffic behind you",
+    "It is only a problem at night"
+  ],
+  correct: 1,
+  explain: "Cutting across lanes can put you in conflict with vehicles correctly positioned, increasing the risk of a collision.",
+  image: ""
+}
+{
+  id: "ra-gen-26",
+  category: "Roundabouts – General",
+  q: "What should you do if you are unsure which exit you need while approaching a roundabout?",
+  choices: [
+    "Stop at the give way line until you decide",
+    "Choose a lane at random and proceed",
+    "Slow down, observe signs and road markings, and be prepared to follow the road ahead",
+    "Signal right and enter the roundabout"
+  ],
+  correct: 2,
+  explain: "If unsure, you should slow down, use signs and markings to decide, and if necessary follow the road ahead safely.",
+  image: ""
+},
+{
+  id: "ra-gen-27",
+  category: "Roundabouts – General",
+  q: "Why should you avoid braking sharply on a roundabout?",
+  choices: [
+    "It can surprise drivers following closely and increase the risk of a collision",
+    "It damages the road surface",
+    "It prevents your signals from working",
+    "It makes steering heavier"
+  ],
+  correct: 0,
+  explain: "Sharp braking can catch following drivers off guard, increasing the likelihood of a rear-end collision.",
+  image: ""
+},
+{
+  id: "ra-gen-28",
+  category: "Roundabouts – General",
+  q: "What should you normally do if emergency vehicles approach while you are on a roundabout?",
+  choices: [
+    "Stop immediately on the roundabout",
+    "Accelerate to leave the roundabout quickly",
+    "Continue and leave the roundabout at the nearest safe exit",
+    "Reverse to clear a path"
+  ],
+  correct: 2,
+  explain: "You should continue driving and leave the roundabout at the nearest safe exit rather than stopping on the roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-29",
+  category: "Roundabouts – General",
+  q: "Why is signalling in good time important when exiting a roundabout?",
+  choices: [
+    "It allows traffic lights to change",
+    "It reduces fuel consumption",
+    "It warns pedestrians to wait",
+    "It helps other road users understand your intentions"
+  ],
+  correct: 3,
+  explain: "Clear, timely signalling helps other road users predict your actions and reduces confusion at roundabouts.",
+  image: ""
+},
+{
+  id: "ra-gen-30",
+  category: "Roundabouts – General",
+  q: "What should you do if road conditions are wet or slippery when using a roundabout?",
+  choices: [
+    "Increase speed to maintain momentum",
+    "Maintain normal speed and braking distances",
+    "Use harsh steering to stay in lane",
+    "Reduce speed and allow greater stopping distance"
+  ],
+  correct: 3,
+  explain: "Wet or slippery conditions reduce grip, so you should slow down and increase your stopping distance on a roundabout.",
+  image: ""
+}
 ];
 
 const QS_PER_ATTEMPT_DEFAULT = 10;
