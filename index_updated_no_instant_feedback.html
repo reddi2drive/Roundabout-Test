@@ -1,0 +1,1269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reddi2Drive – Roundabout Test</title>
+  <meta name="description" content="Reddi2Drive roundabout knowledge test (UK). Instant feedback, score, and review." />
+  <style>
+    :root{
+      --bg:#0b1220; --card:#121a2b; --text:#eef3ff; --muted:#9fb0cc;
+      --accent:#4aa3ff; --good:#2bd576; --bad:#ff4d4d; --border:rgba(255,255,255,.10);
+      --shadow:0 12px 30px rgba(0,0,0,.35); --r:16px; --max:820px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 800px at 20% 0%, rgba(74,163,255,.18), transparent 55%),
+        radial-gradient(1200px 800px at 80% 0%, rgba(43,213,118,.10), transparent 55%),
+        var(--bg);
+    }
+    header{max-width:var(--max); margin:0 auto; padding:22px 16px 8px}
+    h1{margin:0; font-size:20px; letter-spacing:.2px}
+    main{max-width:var(--max); margin:0 auto; padding:8px 16px 28px}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.03), transparent 40%), var(--card);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      border-radius:var(--r);
+      padding:18px;
+      margin:12px 0;
+    }
+    .row{display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+    .pill{border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px; color:var(--muted)}
+    .muted{color:var(--muted)}
+    .big{font-size:28px; margin:0}
+    .btn{
+      border-radius:14px; border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      color:var(--text); padding:11px 14px; cursor:pointer; font-weight:700;
+    }
+    .btn.primary{
+      background:linear-gradient(90deg, rgba(74,163,255,.95), rgba(74,163,255,.55));
+      border-color:rgba(74,163,255,.55); color:#07101d;
+    }
+    .btn.ghost{background:transparent}
+    .btn:disabled{opacity:.5; cursor:not-allowed}
+    .tag{display:inline-block; font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid var(--border); color:var(--muted)}
+    .progress{height:10px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; border:1px solid var(--border); margin-top:12px}
+    .progress > div{height:100%; width:0%; background:linear-gradient(90deg, var(--accent), rgba(74,163,255,.55)); transition:width .25s ease}
+    .qTitle{margin:10px 0 12px; font-size:18px}
+    .answers{display:grid; gap:10px; margin-top:10px}
+    .option{
+      text-align:left; width:100%;
+      padding:12px 12px; border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      color:var(--text); cursor:pointer;
+      transition:transform .05s ease, background .15s ease, border-color .15s ease;
+    }
+    .option:hover{background:rgba(255,255,255,.06)}
+    .option:active{transform:scale(.995)}
+    .option.selected{border-color:rgba(74,163,255,.65); background:rgba(74,163,255,.12)}
+    .option[disabled]{cursor:not-allowed; opacity:.95}
+    .feedback{margin-top:12px; padding:12px; border-radius:14px; border:1px solid var(--border); background:rgba(255,255,255,.03)}
+    .feedback.good{border-color:rgba(43,213,118,.35); background:rgba(43,213,118,.08)}
+    .feedback.bad{border-color:rgba(255,77,77,.35); background:rgba(255,77,77,.08)}
+    .feedback .title{display:flex; justify-content:space-between; gap:10px; align-items:center; font-weight:800; margin-bottom:6px}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    .small{font-size:12px; color:var(--muted)}
+    .kpi{display:flex; gap:12px; flex-wrap:wrap; margin-top:10px}
+    .box{flex:1 1 160px; border:1px solid var(--border); background:rgba(255,255,255,.03); border-radius:14px; padding:12px}
+    .box .n{font-size:22px; font-weight:900; margin:0}
+    .box .l{margin:2px 0 0; color:var(--muted); font-size:12px}
+    .imgwrap{
+      margin-top:10px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.02);
+      border-radius:14px;
+      overflow:hidden;
+    }
+    .imgwrap{
+  margin:10px auto;
+  display:flex;
+  justify-content:center;
+}
+    .imgwrap img{display:block; width:50%; height:auto; margin:0 auto;
+                }
+    .hint{border-left:3px solid rgba(255,204,102,.7); padding-left:10px; margin-top:10px; color:var(--muted); font-size:13px}
+    a{color:var(--accent)}
+    .reviewItem{border-top:1px solid var(--border); padding-top:12px; margin-top:12px}
+    .zoomOverlay{
+      position:fixed; inset:0; background:rgba(0,0,0,.75);
+      display:none; align-items:center; justify-content:center; padding:16px; z-index:9999;
+    }
+    .zoomOverlay img{
+      max-width:min(980px, 96vw);
+      max-height:90vh;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.18);
+    }
+    .brand{
+  margin:0;
+  font-size:20px;
+  letter-spacing:.2px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.brandLogo{
+  height:50px;
+  width:50px;
+  border-radius:50%;
+  object-fit:cover;
+  display:block;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="row">
+     <h1 class="brand">
+  <img src="reddi2drivelogo.png" alt="Reddi2Drive" class="brandLogo">
+  <span>Roundabout Test</span>
+</h1>
+      <div class="pill" id="pill">Fresh question bank • results at the end</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" id="startScreen">
+      <p class="big">Roundabouts: Test Yourself</p>
+      <p class="muted">No hints during the test — you’ll get your score and full review at the end.</p>
+
+      <div class="kpi">
+  <div class="box">
+    <p class="n" id="lastScore">—</p>
+    <p class="l">Last attempt score</p>
+  </div>
+  <div class="box">
+    <p class="n" id="bestScore">—</p>
+    <p class="l">Best score achieved</p>
+  </div>
+</div>
+
+    
+      <div class="actions">
+        <button class="btn primary" id="startBtn">Start test</button>
+        <button class="btn ghost" id="shuffleBtn" title="Shuffle the bank order">Shuffle bank</button>
+        <button class="btn" id="resetBestBtn" title="Clears your saved best score">Reset best</button>
+      </div>
+
+      <p class="small" style="margin-top:10px">
+        UK guidance: always follow signs/markings and local lane directions.
+      </p>
+    </section>
+
+    <section class="card" id="quizScreen" style="display:none">
+      <div class="row">
+        <div>
+          <span class="tag" id="catTag">Category</span>
+          <span class="muted" id="counter">1 / 10</span>
+        </div>
+        <div class="muted" id="scoreMini">Score: 0</div>
+      </div>
+
+      <div class="progress"><div id="bar"></div></div>
+
+      <h2 class="qTitle" id="qText">…</h2>
+
+      <div class="imgwrap" id="imgWrap" style="display:none">
+        <img id="qImg" alt="Question visual (tap to zoom)" />
+      </div>
+      <p class="small" id="imgHint" style="display:none; margin:8px 2px 0">Tap the image to zoom.</p>
+
+      <div class="answers" id="answers"></div>
+
+      <div class="feedback" id="feedback" style="display:none"></div>
+
+      <div class="actions">
+        <button class="btn" id="backBtn">Back</button>
+        <button class="btn primary" id="submitBtn" disabled>Lock in / Submit</button>
+        <button class="btn" id="nextBtn" disabled>Next</button>
+        <button class="btn ghost" id="quitBtn">Quit</button>
+      </div>
+    </section>
+
+    <section class="card" id="resultsScreen" style="display:none">
+      <p class="big" id="resultTitle">Results</p>
+      <p class="muted" id="resultSub">…</p>
+
+      <div class="kpi">
+        <div class="box">
+          <p class="n" id="finalScore">0 / 10</p>
+          <p class="l">Score</p>
+        </div>
+        <div class="box">
+          <p class="n" id="finalPercent">0%</p>
+          <p class="l">Percentage</p>
+        </div>
+        <div class="box">
+          <p class="n" id="finalTime">—</p>
+          <p class="l">Time</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="retryBtn">Try again</button>
+        <button class="btn" id="reviewBtn">Review</button>
+      </div>
+
+      <p class="small" style="margin-top:10px">
+        Tip: Add to Home Screen (Safari → Share → Add to Home Screen).
+      </p>
+    </section>
+
+    <section class="card" id="reviewScreen" style="display:none">
+      <p class="big">Review</p>
+      <p class="muted">Your choice vs the correct answer, plus the explanation.</p>
+      <div id="reviewList"></div>
+
+      <div class="actions">
+        <button class="btn primary" id="backToResultsBtn">Back to results</button>
+        <button class="btn" id="newAttemptBtn">New attempt</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="zoomOverlay" id="zoomOverlay" aria-hidden="true">
+    <img id="zoomImg" alt="Zoomed question visual" />
+  </div>
+
+<script>
+const QUESTION_BANK = [
+  {
+  id: "ra-gen-01",
+  category: "Roundabouts – General",
+  q: "Who has priority at a standard UK roundabout unless road signs or markings indicate otherwise?",
+  choices: [
+    "Traffic approaching the roundabout from the left",
+    "Traffic travelling straight ahead",
+    "Traffic approaching the roundabout from the right",
+    "Traffic already signalling to leave"
+  ],
+  correct: 2,
+  explain: "At most roundabouts, you must give priority to traffic approaching from the right unless signs or road markings tell you otherwise.",
+  image: ""
+},
+{
+  id: "ra-gen-02",
+  category: "Roundabouts – General",
+  q: "What should you do if traffic lights at a roundabout are not working?",
+  choices: [
+    "Proceed slowly without stopping",
+    "Treat the roundabout as if no traffic lights are present and follow normal priority rules",
+    "Stop and wait for another driver to signal",
+    "Give way to traffic approaching from the left"
+  ],
+  correct: 1,
+  explain: "If traffic lights are not working, the roundabout should be treated as an uncontrolled roundabout and normal priority rules apply.",
+  image: ""
+},
+{
+  id: "ra-gen-03",
+  category: "Roundabouts – General",
+  q: "When should you normally cancel your signal when leaving a roundabout?",
+  choices: [
+    "As soon as you pass the exit before yours",
+    "After you have exited the roundabout and your vehicle is straight",
+    "Before entering the roundabout",
+    "Just before reaching your exit"
+  ],
+  correct: 1,
+  explain: "Signals should be cancelled after you have exited the roundabout and your vehicle has straightened to avoid misleading other road users.",
+  image: ""
+},
+{
+  id: "ra-gen-04",
+  category: "Roundabouts – General",
+  q: "What is the main purpose of lane markings on a roundabout?",
+  choices: [
+    "To show pedestrian crossing areas",
+    "To control vehicle speed",
+    "To guide drivers into the correct lane for their intended exit",
+    "To indicate stopping points"
+  ],
+  correct: 2,
+  explain: "Lane markings help drivers choose the correct lane for their exit and maintain safe, predictable positioning on the roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-05",
+  category: "Roundabouts – General",
+  q: "What should you do if you realise you are in the wrong lane on a roundabout?",
+  choices: [
+    "Change lanes suddenly if there is a gap",
+    "Reverse back to the correct lane",
+    "Continue safely in your lane and follow the road ahead",
+    "Stop immediately and indicate"
+  ],
+  correct: 2,
+  explain: "If you are in the wrong lane, you should continue safely and follow the road ahead rather than making a sudden or dangerous manoeuvre.",
+  image: ""
+},
+{
+  id: "ra-gen-06",
+  category: "Roundabouts – General",
+  q: "When approaching a roundabout, what should you do before entering?",
+  choices: [
+    "Accelerate to match the speed of traffic on the roundabout",
+    "Stop unless the road ahead is completely clear",
+    "Give priority to traffic already on the roundabout",
+    "Signal left regardless of your intended exit"
+  ],
+  correct: 2,
+  explain: "You must give priority to traffic already on the roundabout unless road signs or markings indicate otherwise.",
+  image: ""
+},
+{
+  id: "ra-gen-07",
+  category: "Roundabouts – General",
+  q: "Which mirror check is most important immediately before changing lanes on a roundabout?",
+  choices: [
+    "Interior mirror only",
+    "Left door mirror only",
+    "Right door mirror only",
+    "Interior and appropriate door mirror"
+  ],
+  correct: 3,
+  explain: "Before changing lanes, you should check the interior mirror and the appropriate door mirror to ensure it is safe to do so.",
+  image: ""
+},
+{
+  id: "ra-gen-08",
+  category: "Roundabouts – General",
+  q: "What does a blue circular sign showing white curved arrows mean?",
+  choices: [
+    "A mini-roundabout",
+    "A one-way street",
+    "Traffic must circulate in the direction shown at a roundabout",
+    "Give way ahead"
+  ],
+  correct: 2,
+  explain: "This blue circular sign indicates a mandatory roundabout where traffic must circulate in the direction shown. You must still give way to traffic approaching from the right unless signs or road markings indicate otherwise. Mini-roundabouts are identified by their central road marking, not the sign itself.",
+  image: "miniroundaboutsign.PNG"
+},
+{
+  id: "ra-gen-09",
+  category: "Roundabouts – General",
+  q: "How should you normally approach a roundabout when traffic is flowing freely?",
+  choices: [
+    "At a speed that allows you to stop safely if required",
+    "As quickly as possible to avoid hesitation",
+    "By stopping at the give way line every time",
+    "By matching the speed of the fastest vehicle"
+  ],
+  correct: 0,
+  explain: "You should approach at a safe speed that allows you to stop if necessary while maintaining good observation.",
+  image: ""
+},
+{
+  id: "ra-gen-10",
+  category: "Roundabouts – General",
+  q: "Why is good observation particularly important when approaching a roundabout?",
+  choices: [
+    "Because traffic may be approaching from multiple directions",
+    "Because roundabouts always have traffic lights",
+    "Because pedestrians have priority on the roundabout",
+    "Because signalling is not required"
+  ],
+  correct: 0,
+  explain: "Roundabouts involve traffic from multiple directions, so effective observation is essential to judge gaps and priority safely.",
+  image: ""
+},
+{
+  id: "ra-gen-11",
+  category: "Roundabouts – General",
+  q: "When should you normally signal right at a roundabout?",
+  choices: [
+    "When taking the first exit",
+    "When going straight ahead",
+    "When turning right or making a full turn",
+    "Only after passing the exit before yours"
+  ],
+  correct: 2,
+  explain: "You should signal right when turning right or making a full turn at a roundabout to clearly indicate your intention to other road users.",
+  image: ""
+},
+{
+  id: "ra-gen-12",
+  category: "Roundabouts – General",
+  q: "What should you do if a large vehicle is signalling left but positioned to the right on a roundabout?",
+  choices: [
+    "Overtake on the left if there is space",
+    "Assume it is signalling incorrectly and proceed",
+    "Give it extra space and do not attempt to pass",
+    "Sound your horn to warn them"
+  ],
+  correct: 2,
+  explain: "Large vehicles may need extra room to manoeuvre on roundabouts, so you should give them space and not attempt to pass.",
+  image: ""
+},
+{
+  id: "ra-gen-13",
+  category: "Roundabouts – General",
+  q: "What is the main risk of signalling incorrectly on a roundabout?",
+  choices: [
+    "It may confuse or mislead other road users",
+    "It will result in an automatic driving test fail",
+    "It causes traffic lights to change",
+    "It increases fuel consumption"
+  ],
+  correct: 0,
+  explain: "Incorrect signalling can mislead other road users and increase the risk of collisions at a roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-14",
+  category: "Roundabouts – General",
+  q: "On approach to a roundabout, why should you adjust your speed early?",
+  choices: [
+    "To make room for vehicles behind you",
+    "To allow time for observation and decision-making",
+    "To avoid using the brakes",
+    "To match the speed of traffic exiting"
+  ],
+  correct: 1,
+  explain: "Reducing speed early allows you time to observe, assess priority, and decide whether it is safe to enter the roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-15",
+  category: "Roundabouts – General",
+  q: "What should you do if another driver hesitates when they have priority at a roundabout?",
+  choices: [
+    "Proceed immediately to assert your position",
+    "Wave them on using hand signals",
+    "Sound your horn to prompt them",
+    "Remain patient and only proceed when it is safe"
+  ],
+  correct: 3,
+  explain: "You should remain patient and only proceed when it is clearly safe, even if another driver hesitates despite having priority.",
+  image: ""
+},
+{
+  id: "ra-gen-16",
+  category: "Roundabouts – General",
+  q: "What should you do if your exit from a roundabout is blocked by stationary traffic?",
+  choices: [
+    "Enter the roundabout and wait on it",
+    "Sound your horn to encourage movement",
+    "Wait before entering until your exit is clear",
+    "Change to a different lane at the last moment"
+  ],
+  correct: 2,
+  explain: "You should not enter a roundabout unless your exit is clear, as stopping on the roundabout can cause congestion and danger.",
+  image: ""
+},
+{
+  id: "ra-gen-17",
+  category: "Roundabouts – General",
+  q: "Which road users should you be especially aware of when approaching a roundabout?",
+  choices: [
+    "Only vehicles already on the roundabout",
+    "Cyclists and motorcyclists",
+    "Only large goods vehicles",
+    "Only pedestrians"
+  ],
+  correct: 1,
+  explain: "Cyclists and motorcyclists can be harder to see, so extra observation is required when approaching and using a roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-18",
+  category: "Roundabouts – General",
+  q: "What does a mini-roundabout usually require you to do?",
+  choices: [
+    "Drive straight over the centre marking",
+    "Give way to traffic from the right",
+    "Stop at all times before entering",
+    "Signal right regardless of direction"
+  ],
+  correct: 1,
+  explain: "At a mini-roundabout, you normally give priority to traffic approaching from the right, just like a standard roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-19",
+  category: "Roundabouts – General",
+  q: "Why should you avoid overtaking on a roundabout?",
+  choices: [
+    "It is always illegal",
+    "It increases fuel consumption",
+    "It can be unpredictable and dangerous",
+    "It causes damage to road markings"
+  ],
+  correct: 2,
+  explain: "Overtaking on a roundabout is risky due to changing lanes, signalling, and vehicles entering or exiting unexpectedly.",
+  image: ""
+},
+{
+  id: "ra-gen-20",
+  category: "Roundabouts – General",
+  q: "What should you do if road markings at a roundabout are unclear or worn?",
+  choices: [
+    "Follow the vehicle in front exactly",
+    "Rely on observation and road position",
+    "Stop and wait for instructions",
+    "Ignore other traffic"
+  ],
+  correct: 1,
+  explain: "If markings are unclear, good observation and safe positioning are essential to negotiate the roundabout safely.",
+  image: ""
+},
+{
+  id: "ra-gen-21",
+  category: "Roundabouts – General",
+  q: "When driving straight ahead at a roundabout, when should you normally signal left?",
+  choices: [
+    "Before entering the roundabout",
+    "Only after exiting the roundabout",
+    "As you pass the exit before the one you intend to take",
+    "As soon as you see the roundabout"
+  ],
+  correct: 2,
+  explain: "When going straight ahead, you should signal left after passing the exit before yours to indicate you are leaving.",
+  image: ""
+},
+{
+  id: "ra-gen-22",
+  category: "Roundabouts – General",
+  q: "What should you do if pedestrians are waiting to cross at an exit of a roundabout?",
+  choices: [
+    "Maintain speed to avoid blocking traffic",
+    "Give way if they have stepped onto the crossing",
+    "Sound your horn to alert them",
+    "Ignore them as roundabouts have priority"
+  ],
+  correct: 1,
+  explain: "You must give way to pedestrians who have already stepped onto a crossing when exiting a roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-23",
+  category: "Roundabouts – General",
+  q: "Why is lane discipline important on multi-lane roundabouts?",
+  choices: [
+    "To reduce fuel use",
+    "To make signalling unnecessary",
+    "To help traffic lights operate",
+    "To reduce conflict and confusion with other road users"
+  ],
+  correct: 3,
+  explain: "Correct lane discipline helps reduce confusion and conflict, allowing traffic to flow safely and predictably.",
+  image: ""
+},
+{
+  id: "ra-gen-24",
+  category: "Roundabouts – General",
+  q: "What is the safest action if you miss your intended exit on a roundabout?",
+  choices: [
+    "Stop and reverse carefully",
+    "Turn sharply across lanes",
+    "Continue around and take the next exit",
+    "Signal and stop on the roundabout"
+  ],
+  correct: 2,
+  explain: "If you miss your exit, you should continue around the roundabout and take the next safe exit.",
+  image: ""
+},
+{
+  id: "ra-gen-25",
+  category: "Roundabouts – General",
+  q: "Why should you avoid cutting across lanes when exiting a roundabout?",
+  choices: [
+    "It increases tyre wear",
+    "It may conflict with other vehicles using their correct lane",
+    "It delays traffic behind you",
+    "It is only a problem at night"
+  ],
+  correct: 1,
+  explain: "Cutting across lanes can put you in conflict with vehicles correctly positioned, increasing the risk of a collision.",
+  image: ""
+},
+{
+  id: "ra-gen-26",
+  category: "Roundabouts – General",
+  q: "What should you do if you are unsure which exit you need while approaching a roundabout?",
+  choices: [
+    "Stop at the give way line until you decide",
+    "Choose a lane at random and proceed",
+    "Slow down, observe signs and road markings, and be prepared to follow the road ahead",
+    "Signal right and enter the roundabout"
+  ],
+  correct: 2,
+  explain: "If unsure, you should slow down, use signs and markings to decide, and if necessary follow the road ahead safely.",
+  image: ""
+},
+{
+  id: "ra-gen-27",
+  category: "Roundabouts – General",
+  q: "Why should you avoid braking sharply on a roundabout?",
+  choices: [
+    "It can surprise drivers following closely and increase the risk of a collision",
+    "It damages the road surface",
+    "It prevents your signals from working",
+    "It makes steering heavier"
+  ],
+  correct: 0,
+  explain: "Sharp braking can catch following drivers off guard, increasing the likelihood of a rear-end collision.",
+  image: ""
+},
+{
+  id: "ra-gen-28",
+  category: "Roundabouts – General",
+  q: "What should you normally do if emergency vehicles approach while you are on a roundabout?",
+  choices: [
+    "Stop immediately on the roundabout",
+    "Accelerate to leave the roundabout quickly",
+    "Continue and leave the roundabout at the nearest safe exit",
+    "Reverse to clear a path"
+  ],
+  correct: 2,
+  explain: "You should continue driving and leave the roundabout at the nearest safe exit rather than stopping on the roundabout.",
+  image: ""
+},
+{
+  id: "ra-gen-29",
+  category: "Roundabouts – General",
+  q: "Why is signalling in good time important when exiting a roundabout?",
+  choices: [
+    "It allows traffic lights to change",
+    "It reduces fuel consumption",
+    "It warns pedestrians to wait",
+    "It helps other road users understand your intentions"
+  ],
+  correct: 3,
+  explain: "Clear, timely signalling helps other road users predict your actions and reduces confusion at roundabouts.",
+  image: ""
+},
+{
+  id: "ra-gen-30",
+  category: "Roundabouts – General",
+  q: "What should you do if road conditions are wet or slippery when using a roundabout?",
+  choices: [
+    "Increase speed to maintain momentum",
+    "Maintain normal speed and braking distances",
+    "Use harsh steering to stay in lane",
+    "Reduce speed and allow greater stopping distance"
+  ],
+  correct: 3,
+  explain: "Wet or slippery conditions reduce grip, so you should slow down and increase your stopping distance on a roundabout.",
+  image: ""
+},
+  {
+  id: "ra-gen-31",
+  category: "Roundabouts – General",
+  q: "Using the diagram shown, which lane should you use to take the third exit at this roundabout?",
+  choices: [
+    "Left-hand lane",
+    "Right-hand lane",
+    "Either lane",
+    "The lane with the shortest queue"
+  ],
+  correct: 1,
+  explain: "The diagram shows lane arrows directing traffic taking the third exit to use the right-hand lane. Road markings must always be followed.",
+  image: "signsforbham441.png"
+},
+{
+  id: "ra-gen-32",
+  category: "Roundabouts – General",
+  q: "According to the road markings shown in the image, which signal should you use on approach?",
+  choices: [
+    "No signal",
+    "Signal left",
+    "Signal right",
+    "Signal only after entering the roundabout"
+  ],
+  correct: 2,
+  explain: "The road markings indicate a right turn, so a right signal should be used on approach to clearly show your intention.",
+  image: "ra-gen-32-approach-markings.png"
+},
+{
+  id: "ra-gen-33",
+  category: "Roundabouts – General",
+  q: "Based on the diagram, who has priority at this roundabout?",
+  choices: [
+    "Traffic approaching from the left",
+    "Traffic already on the roundabout",
+    "Traffic with the clearest exit",
+    "Traffic travelling straight ahead"
+  ],
+  correct: 1,
+  explain: "The give way markings shown in the image mean traffic approaching the roundabout must give priority to traffic already on it.",
+  image: "ra-gen-33-priority-diagram.png"
+},
+{
+  id: "ra-gen-34",
+  category: "Roundabouts – General",
+  q: "Looking at the image, where should you position your vehicle when turning right at this roundabout?",
+  choices: [
+    "Close to the left-hand kerb",
+    "In the left-hand lane",
+    "In the right-hand lane or position",
+    "In any lane as long as you signal"
+  ],
+  correct: 2,
+  explain: "The diagram shows that vehicles turning right should adopt a right-hand position unless signs or road markings indicate otherwise.",
+  image: "ra-gen-34-turn-right-position.png"
+},
+{
+  id: "ra-gen-35",
+  category: "Roundabouts – General",
+  q: "Using the diagram provided, when should you signal left to leave the roundabout?",
+  choices: [
+    "Before entering the roundabout",
+    "As soon as you see your exit",
+    "After passing the exit before the one you intend to take",
+    "Only once you have exited"
+  ],
+  correct: 2,
+  explain: "The image shows a standard roundabout layout where you should signal left after passing the exit before yours to indicate you are leaving.",
+  image: "ra-gen-35-exit-signal-timing.png"
+},
+{
+  id: "ra-gen-36",
+  category: "Roundabouts – General",
+  q: "Using the road sign shown, what does this sign tell you about the roundabout ahead?",
+  choices: [
+    "It is a mini-roundabout",
+    "It is a mandatory roundabout where traffic must circulate in the direction shown",
+    "It is a one-way system",
+    "You must give way to traffic from the left"
+  ],
+  correct: 1,
+  explain: "The blue circular sign with white arrows indicates a mandatory roundabout. Traffic must circulate in the direction shown and give way to traffic from the right unless indicated otherwise.",
+  image: "miniroundaboutsign.PNG"
+},
+  {
+  id: "ra-gen-37",
+  category: "Roundabouts – General",
+  q: "What is the main reason you should avoid entering a roundabout if your exit is not clear?",
+  choices: [
+    "It increases fuel consumption",
+    "You may be forced to stop on the roundabout and block other traffic",
+    "It makes signalling unnecessary",
+    "It causes confusion for pedestrians only"
+  ],
+  correct: 1,
+  explain: "If your exit is blocked, entering the roundabout could cause you to stop on it, leading to congestion and increased risk for other road users.",
+  image: ""
+},
+{
+  id: "ra-gen-38",
+  category: "Roundabouts – General",
+  q: "According to the lane direction sign shown, which lane should you be in to follow the indicated route?",
+  choices: [
+    "Left-hand lane only",
+    "Right-hand lane only",
+    "Either lane",
+    "Use the lane with the clearest traffic"
+  ],
+  correct: 0,
+  explain: "The lane direction sign shows arrows indicating that the left-hand lane is designated for the indicated route and must be followed.",
+  image: "ra-gen-38-lane-direction-sign.png"
+},
+{
+  id: "ra-gen-39",
+  category: "Roundabouts – General",
+  q: "Using the warning sign shown, what should you expect at the junction ahead?",
+  choices: [
+    "A traffic light controlled junction",
+    "A mini-roundabout ahead",
+    "A crossroads",
+    "A one-way street"
+  ],
+  correct: 1,
+  explain: "The triangular warning sign with a roundabout symbol warns drivers of a mini-roundabout ahead.",
+  image: "roundaboutwarning.png"
+},
+{
+  id: "ra-gen-40",
+  category: "Roundabouts – General",
+  q: "Referring to the sign shown, what does this sign tell you about priority at the roundabout?",
+  choices: [
+    "You have priority over traffic from the right",
+    "Traffic on the roundabout must give way",
+    "You must give way to traffic from the right",
+    "Priority is controlled by traffic lights"
+  ],
+  correct: 2,
+  explain: "The give way sign and markings indicate that you must give priority to traffic approaching from the right at the roundabout.",
+  image: "ra-gen-40-give-way-roundabout-sign.png"
+},
+  {
+  id: "ra-gen-41",
+  category: "Roundabouts – General",
+  q: "At a roundabout with no lane markings or signs, what should guide your choice of position and speed?",
+  choices: [
+    "The behaviour of the vehicle behind you",
+    "Your intended exit, observation, and the flow of traffic",
+    "The size of your vehicle",
+    "How quickly you want to leave the roundabout"
+  ],
+  correct: 1,
+  explain: "When there are no signs or lane markings, you should use good observation, adjust your speed appropriately, and position your vehicle based on your intended exit and the traffic conditions.",
+  image: ""
+},
+{
+  id: "ra-gen-42",
+  category: "Roundabouts – General",
+  q: "When approaching a busy roundabout, what is the safest way to judge whether it is safe to enter?",
+  choices: [
+    "By watching the vehicle directly in front and following it",
+    "By waiting for traffic to completely stop on the roundabout",
+    "By assessing the speed and position of traffic from the right and whether a safe gap exists",
+    "By entering quickly before other drivers close the gap"
+  ],
+  correct: 2,
+  explain: "Safe entry depends on effective observation and judging whether there is a suitable gap in traffic approaching from the right, rather than reacting to other drivers or rushing the decision.",
+  image: ""
+},
+{
+  id: "ra-gen-43",
+  category: "Roundabouts – General",
+  q: "According to the advance direction sign shown, how are the exits arranged at the roundabout?",
+  choices: [
+    "In alphabetical order",
+    "In the order you reach them when travelling clockwise",
+    "In order of road importance",
+    "In the order of distance from the roundabout"
+  ],
+  correct: 1,
+  explain: "Advance direction signs show exits in the order you reach them when travelling clockwise around the roundabout.",
+  image: "ra-gen-43-advance-direction-sign.png"
+},
+{
+  id: "ra-gen-44",
+  category: "Roundabouts – General",
+  q: "Using the lane direction sign shown, which lane should you use to follow the route indicated?",
+  choices: [
+    "Left-hand lane",
+    "Right-hand lane",
+    "Either lane",
+    "Any lane if you signal"
+  ],
+  correct: 0,
+  explain: "Lane direction signs use arrows to show which lane must be used for a particular route. You should follow the arrow for your intended direction.",
+  image: "ra-gen-44-lane-direction-sign.png"
+},
+{
+  id: "ra-gen-45",
+  category: "Roundabouts – General",
+  q: "Referring to the sign shown, what does a white circular sign with a red border and a black arrow crossed by a red line mean at a roundabout?",
+  choices: [
+    "No U-turns allowed",
+    "No entry",
+    "No overtaking",
+    "No right turn"
+  ],
+  correct: 0,
+  explain: "This sign means no U-turns are permitted, which may apply at or near some roundabouts.",
+  image: "ra-gen-45-no-u-turn-sign.png"
+},
+{
+  id: "ra-gen-46",
+  category: "Roundabouts – General",
+  q: "Using the sign shown, what does a green-backed direction sign at a roundabout indicate?",
+  choices: [
+    "A local road",
+    "A motorway route",
+    "A primary route",
+    "A tourist attraction"
+  ],
+  correct: 2,
+  explain: "Green-backed direction signs indicate primary routes, which may be accessed via a roundabout.",
+  image: "ra-gen-46-primary-route-sign.png"
+},
+{
+  id: "ra-gen-47",
+  category: "Roundabouts – General",
+  q: "Looking at the sign shown, what does a white-backed direction sign at a roundabout indicate?",
+  choices: [
+    "A primary route",
+    "A motorway",
+    "A local route",
+    "A diversion route"
+  ],
+  correct: 2,
+  explain: "White-backed direction signs indicate local, non-primary routes.",
+  image: "ra-gen-47-local-route-sign.png"
+},
+{
+  id: "ra-gen-48",
+  category: "Roundabouts – General",
+  q: "According to the sign shown, what does a blue-backed direction sign at a roundabout tell you?",
+  choices: [
+    "The route leads to a primary road",
+    "The route leads to a motorway",
+    "The route is for buses only",
+    "The route is a diversion"
+  ],
+  correct: 1,
+  explain: "Blue-backed direction signs indicate routes leading to or along a motorway.",
+  image: "ra-gen-48-motorway-direction-sign.png"
+},
+{
+  id: "ra-gen-49",
+  category: "Roundabouts – General",
+  q: "Using the sign shown, what does a yellow-backed sign at a roundabout indicate?",
+  choices: [
+    "A permanent road closure",
+    "A diversion route",
+    "A toll road",
+    "A bus-only route"
+  ],
+  correct: 1,
+  explain: "Yellow-backed signs are used for temporary diversion routes, which may direct traffic through roundabouts.",
+  image: "ra-gen-49-diversion-sign.png"
+},
+{
+  id: "ra-gen-50",
+  category: "Roundabouts – General",
+  q: "Referring to the sign shown, what does a red circle with a white background and a horizontal white bar indicate near a roundabout?",
+  choices: [
+    "No overtaking",
+    "Give way",
+    "No entry",
+    "One-way traffic"
+  ],
+  correct: 2,
+  explain: "The no entry sign indicates that vehicles must not enter the road, which may apply to certain roundabout exits or approaches.",
+  image: "ra-gen-50-no-entry-sign.png"
+}
+];
+
+const QS_PER_ATTEMPT_DEFAULT = 50;
+
+const el = (id) => document.getElementById(id);
+const startScreen = el("startScreen");
+const quizScreen = el("quizScreen");
+const resultsScreen = el("resultsScreen");
+const reviewScreen = el("reviewScreen");
+
+const startBtn = el("startBtn");
+const shuffleBtn = el("shuffleBtn");
+const resetBestBtn = el("resetBestBtn");
+const bestScore = el("bestScore");
+const lastScore = el("lastScore");
+
+const catTag = el("catTag");
+const counter = el("counter");
+const qText = el("qText");
+const answers = el("answers");
+const feedback = el("feedback");
+const submitBtn = el("submitBtn");
+const nextBtn = el("nextBtn");
+const backBtn = el("backBtn");
+const quitBtn = el("quitBtn");
+const bar = el("bar");
+const scoreMini = el("scoreMini");
+scoreMini.style.display = "none";
+
+const imgWrap = el("imgWrap");
+const qImg = el("qImg");
+const imgHint = el("imgHint");
+const zoomOverlay = el("zoomOverlay");
+const zoomImg = el("zoomImg");
+
+const resultTitle = el("resultTitle");
+const resultSub = el("resultSub");
+const finalScore = el("finalScore");
+const finalPercent = el("finalPercent");
+const finalTime = el("finalTime");
+
+const retryBtn = el("retryBtn");
+const reviewBtn = el("reviewBtn");
+
+const reviewList = el("reviewList");
+const backToResultsBtn = el("backToResultsBtn");
+const newAttemptBtn = el("newAttemptBtn");
+
+const STORAGE_BEST = "r2d_roundabout_best";
+
+let attempt = [];
+let idx = 0;
+let score = 0;
+let picked = [];
+let currentSelected = null;
+let startedAt = null;
+let qsPerAttempt = QS_PER_ATTEMPT_DEFAULT;
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[s]));
+}
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function show(screen){
+  startScreen.style.display="none";
+  quizScreen.style.display="none";
+  resultsScreen.style.display="none";
+  reviewScreen.style.display="none";
+  screen.style.display="block";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function loadStats(){
+  // Ensure attempt size never exceeds the bank
+  qsPerAttempt = Math.min(QS_PER_ATTEMPT_DEFAULT, QUESTION_BANK.length);
+
+  const best = Number(localStorage.getItem(STORAGE_BEST) || 0);
+  const last = Number(localStorage.getItem("r2d_roundabout_last") || 0);
+
+  bestScore.textContent = best ? `${best} / ${qsPerAttempt}` : "—";
+  lastScore.textContent = last ? `${last} / ${qsPerAttempt}` : "—";
+}
+function buildAttempt(){
+  const pool = shuffle(QUESTION_BANK);
+  const selected = pool.slice(0, qsPerAttempt).map(q => {
+    const mapped = q.choices.map((text, i) => ({text, originalIndex:i}));
+    const shuffled = shuffle(mapped);
+    const newCorrect = shuffled.findIndex(x => x.originalIndex === q.correct);
+    return {...q, choices: shuffled.map(x => x.text), correct: newCorrect};
+  });
+
+  attempt = selected;
+  idx = 0;
+  score = 0;
+  picked = Array(attempt.length).fill(null);
+  startedAt = new Date();
+}
+function setImage(src){
+  if (!src){
+    imgWrap.style.display = "none";
+    imgHint.style.display = "none";
+    qImg.removeAttribute("src");
+    return;
+  }
+  imgWrap.style.display = "block";
+  imgHint.style.display = "block";
+  qImg.src = src;
+}
+qImg.addEventListener("click", () => {
+  if (!qImg.getAttribute("src")) return;
+  zoomImg.src = qImg.src;
+  zoomOverlay.style.display = "flex";
+  zoomOverlay.setAttribute("aria-hidden","false");
+});
+zoomOverlay.addEventListener("click", () => {
+  zoomOverlay.style.display = "none";
+  zoomOverlay.setAttribute("aria-hidden","true");
+  zoomImg.removeAttribute("src");
+});
+
+function render(){
+  const q = attempt[idx];
+  catTag.textContent = q.category || "Roundabouts";
+  counter.textContent = `${idx+1} / ${attempt.length}`;
+  qText.textContent = q.q;
+
+  // Hide running score so users don't know results until the end
+  scoreMini.textContent = "";
+
+  // Progress shows where you are in the quiz (not your score)
+  bar.style.width = `${Math.round((idx/attempt.length)*100)}%`;
+
+  setImage(q.image);
+
+  answers.innerHTML = "";
+  feedback.style.display = "none"; // no per-question feedback
+  feedback.className = "feedback";
+
+  currentSelected = null;
+  submitBtn.disabled = true;
+  nextBtn.disabled = true;
+
+  q.choices.forEach((choiceText, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "option";
+    b.textContent = choiceText;
+    b.addEventListener("click", () => selectOption(i));
+    answers.appendChild(b);
+  });
+
+  // If this question was already submitted (e.g. user pressed Back), show it locked
+  if (picked[idx] !== null && picked[idx] !== undefined){
+    const chosen = picked[idx].choiceIndex;
+    lockSubmitted(chosen);
+    submitBtn.disabled = true;
+    nextBtn.disabled = false;
+    bar.style.width = `${Math.round(((idx+1)/attempt.length)*100)}%`;
+  }
+}
+
+function selectOption(selectedIndex){
+  // allow changing mind until submitted
+  if (picked[idx] !== null && picked[idx] !== undefined) return;
+
+  currentSelected = selectedIndex;
+  submitBtn.disabled = false;
+
+  [...answers.querySelectorAll("button.option")].forEach((btn, i) => {
+    btn.classList.toggle("selected", i === selectedIndex);
+  });
+}
+
+function lockSubmitted(selectedIndex){
+  [...answers.querySelectorAll("button.option")].forEach((btn, i) => {
+    btn.disabled = true;
+    btn.classList.toggle("selected", i === selectedIndex);
+  });
+}
+
+function submitCurrent(){
+  if (currentSelected === null) return;
+
+  // lock in answer for this question
+  picked[idx] = { choiceIndex: currentSelected };
+
+  lockSubmitted(currentSelected);
+  submitBtn.disabled = true;
+  nextBtn.disabled = false;
+  bar.style.width = `${Math.round(((idx+1)/attempt.length)*100)}%`;
+}
+
+function finish(){
+  const total = attempt.length;
+
+  // Calculate score only at the end (no feedback during the quiz)
+  score = picked.reduce((s, p, i) => {
+    if (!p) return s;
+    return s + (p.choiceIndex === attempt[i].correct ? 1 : 0);
+  }, 0);
+
+  const pct = Math.round((score/total)*100);
+  const elapsedMs = new Date() - startedAt;
+  const mins = Math.floor(elapsedMs/60000);
+  const secs = Math.floor((elapsedMs%60000)/1000);
+  const timeStr = `${mins}m ${secs}s`;
+
+  finalScore.textContent = `${score} / ${total}`;
+  finalPercent.textContent = `${pct}%`;
+  finalTime.textContent = timeStr;
+
+  let title, sub;
+  if (pct >= 90){
+    title = "Strong roundabout knowledge 💪";
+    sub = "Keep it sharp by practising with real lane markings and signage.";
+  } else if (pct >= 70){
+    title = "Good work — a few gaps to tighten up ✅";
+    sub = "Revisit the ones you missed and focus on timing of signals + lane discipline.";
+  } else if (pct >= 50){
+    title = "Not bad — let’s build consistency 🔁";
+    sub = "Slow it down on approach, get the routine right, and make decisions earlier.";
+  } else {
+    title = "Let’s nail the foundations 🧱";
+    sub = "Read the explanations carefully, then try again. Consistency beats guessing.";
+  }
+  resultTitle.textContent = title;
+  resultSub.textContent = sub;
+
+localStorage.setItem("r2d_roundabout_last", String(score));
+  
+  const best = Number(localStorage.getItem(STORAGE_BEST) || 0);
+  if (score > best){
+    localStorage.setItem(STORAGE_BEST, String(score));
+  }
+  loadStats();
+
+  show(resultsScreen);
+}
+function buildReview(){
+  reviewList.innerHTML = "";
+  attempt.forEach((q, i) => {
+    const p = picked[i];
+    const you = p ? q.choices[p.choiceIndex] : "—";
+    const correct = q.choices[q.correct];
+    const ok = p ? (p.choiceIndex === q.correct) : false;
+
+    const div = document.createElement("div");
+    div.className = "reviewItem";
+    div.innerHTML = `
+      <div class="row">
+        <div>
+          <span class="tag">${escapeHtml(q.category || "Roundabouts")}</span>
+          <strong>${escapeHtml(q.q)}</strong>
+        </div>
+        <div style="font-weight:900; color:${ok ? 'var(--good)' : 'var(--bad)'}">${ok ? "Correct" : "Wrong"}</div>
+      </div>
+      ${q.image ? `<div class="imgwrap" style="margin-top:10px"><img alt="Question visual" src="${escapeHtml(q.image)}"></div>` : ""}
+      <div class="small" style="margin-top:8px">
+        <div><span class="muted">You chose:</span> <strong>${escapeHtml(you)}</strong></div>
+        <div><span class="muted">Correct:</span> <strong>${escapeHtml(correct)}</strong></div>
+      </div>
+      <div class="hint">${escapeHtml(q.explain || "")}</div>
+    `;
+    reviewList.appendChild(div);
+  });
+}
+
+startBtn.addEventListener("click", () => {
+  loadStats();
+  buildAttempt();
+  show(quizScreen);
+  render();
+});
+shuffleBtn.addEventListener("click", () => {
+  const temp = shuffle(QUESTION_BANK);
+  QUESTION_BANK.length = 0;
+  temp.forEach(x => QUESTION_BANK.push(x));
+  loadStats();
+});
+resetBestBtn.addEventListener("click", () => {
+  localStorage.removeItem(STORAGE_BEST);
+  loadStats();
+});
+
+submitBtn.addEventListener("click", submitCurrent);
+
+nextBtn.addEventListener("click", () => {
+  // must submit before moving on
+  if (!picked[idx]) return;
+
+  if (idx < attempt.length - 1){
+    idx += 1;
+    render();
+  } else {
+    finish();
+  }
+});
+backBtn.addEventListener("click", () => {
+  if (idx > 0){
+    idx -= 1;
+    render();
+  } else {
+    show(startScreen);
+  }
+});
+quitBtn.addEventListener("click", () => show(startScreen));
+retryBtn.addEventListener("click", () => {
+  buildAttempt();
+  show(quizScreen);
+  render();
+});
+reviewBtn.addEventListener("click", () => {
+  buildReview();
+  show(reviewScreen);
+});
+backToResultsBtn.addEventListener("click", () => show(resultsScreen));
+newAttemptBtn.addEventListener("click", () => {
+  buildAttempt();
+  show(quizScreen);
+  render();
+});
+
+loadStats();
+show(startScreen);
+</script>
+</body>
+</html>
