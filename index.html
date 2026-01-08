@@ -133,19 +133,15 @@
       <p class="muted">Instant feedback after every question, then a score + review at the end.</p>
 
       <div class="kpi">
-        <div class="box">
-          <p class="n" id="bankCount">—</p>
-          <p class="l">Questions in bank</p>
-        </div>
-        <div class="box">
-          <p class="n" id="perAttempt">10</p>
-          <p class="l">Questions per attempt</p>
-        </div>
-        <div class="box">
-          <p class="n" id="bestScore">—</p>
-          <p class="l">Best score (this device)</p>
-        </div>
-      </div>
+  <div class="box">
+    <p class="n" id="lastScore">—</p>
+    <p class="l">Last attempt score</p>
+  </div>
+  <div class="box">
+    <p class="n" id="bestScore">—</p>
+    <p class="l">Best score achieved</p>
+  </div>
+</div>
 
     
       <div class="actions">
@@ -952,6 +948,7 @@ const resetBestBtn = el("resetBestBtn");
 const bankCount = el("bankCount");
 const perAttempt = el("perAttempt");
 const bestScore = el("bestScore");
+const lastScore = el("lastScore");
 
 const catTag = el("catTag");
 const counter = el("counter");
@@ -1162,7 +1159,7 @@ function finish(){
 
   const best = Number(localStorage.getItem(STORAGE_BEST) || 0);
   if (score > best){
-    localStorage.setItem(STORAGE_BEST, String(score));
+    localStorage.setItem("r2d_roundabout_last", String(score));
   }
   loadStats();
 
