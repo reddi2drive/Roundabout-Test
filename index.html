@@ -1011,9 +1011,12 @@ function show(screen){
   window.scrollTo({top:0, behavior:"smooth"});
 }
 function loadStats(){
-  bankCount.textContent = String(QUESTION_BANK.length);
-  qsPerAttempt = Math.min(QS_PER_ATTEMPT_DEFAULT, QUESTION_BANK.length);
-  perAttempt.textContent = String(qsPerAttempt);
+  const best = Number(localStorage.getItem(STORAGE_BEST) || 0);
+  const last = Number(localStorage.getItem("r2d_roundabout_last") || 0);
+
+  bestScore.textContent = best ? `${best}` : "—";
+  lastScore.textContent = last ? `${last}` : "—";
+}
 
   const best = Number(localStorage.getItem(STORAGE_BEST) || 0);
   bestScore.textContent = best ? `${best} / ${qsPerAttempt}` : "—";
