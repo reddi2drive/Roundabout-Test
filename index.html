@@ -7,6 +7,13 @@
   <meta name="description" content="Reddi2Drive roundabout knowledge test (UK). Instant feedback, score, and review." />
   <style>
 
+    .q-image {
+  display: none;
+  max-width: 100%;
+  margin: 18px auto 10px;
+  border-radius: 12px;
+}
+
     html, body {
   overscroll-behavior-y: contain;
 }
@@ -186,9 +193,7 @@
 
       <h2 class="qTitle" id="qText">…</h2>
 
-      <div class="imgwrap" id="imgWrap" style="display:none">
-        <img id="qImg" alt="Question visual (tap to zoom)" />
-      </div>
+     <img id="qImage" class="q-image" src="" alt="Question image">
       <p class="small" id="imgHint" style="display:none; margin:8px 2px 0">Tap the image to zoom.</p>
 
       <div class="answers" id="answers"></div>
