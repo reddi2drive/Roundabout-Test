@@ -6,6 +6,25 @@
   <title>Reddi2Drive – Roundabout Test</title>
   <meta name="description" content="Reddi2Drive roundabout knowledge test (UK). Instant feedback, score, and review." />
   <style>
+
+    .nav-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+
+.nav-main {
+  display: flex;
+  gap: 10px;
+}
+
+.quit-btn {
+  margin-left: auto;
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.35);
+}
+    
     :root{
       --bg:#0b1220; --card:#121a2b; --text:#eef3ff; --muted:#9fb0cc;
       --accent:#4aa3ff; --good:#2bd576; --bad:#ff4d4d; --border:rgba(255,255,255,.10);
@@ -178,12 +197,15 @@
 
       <div class="feedback" id="feedback" style="display:none"></div>
 
-      <div class="actions">
-        <button class="btn" id="backBtn">Back</button>
-        <button class="btn primary" id="submitBtn" disabled>Lock in / Submit</button>
-        <button class="btn" id="nextBtn" disabled>Next</button>
-        <button class="btn ghost" id="quitBtn">Quit</button>
-      </div>
+  <div class="nav-buttons">
+  <div class="nav-main">
+    <button id="backBtn">Back</button>
+    <button id="submitBtn">Lock in / Submit</button>
+    <button id="nextBtn">Next</button>
+  </div>
+
+  <button id="quitBtn" class="quit-btn">Quit</button>
+</div>
     </section>
 
     <section class="card" id="resultsScreen" style="display:none">
