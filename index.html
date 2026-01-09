@@ -7,6 +7,16 @@
   <meta name="description" content="Reddi2Drive roundabout knowledge test (UK). Instant feedback, score, and review." />
   <style>
 
+    .r2d-nav-row{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.r2d-nav-row #quitBtn{
+  margin-left: auto;
+}
+
     .nav-buttons {
   display: flex;
   align-items: center;
@@ -197,14 +207,11 @@
 
       <div class="feedback" id="feedback" style="display:none"></div>
 
-  <div class="nav-buttons">
-  <div class="nav-main">
-    <button id="backBtn">Back</button>
-    <button id="submitBtn">Lock in / Submit</button>
-    <button id="nextBtn">Next</button>
-  </div>
-
-  <button id="quitBtn" class="quit-btn">Quit</button>
+ <div class="nav-buttons r2d-nav-row">
+  <button id="backBtn">Back</button>
+  <button id="submitBtn">Lock in / Submit</button>
+  <button id="nextBtn" disabled>Next</button>
+  <button id="quitBtn">Quit</button>
 </div>
     </section>
 
