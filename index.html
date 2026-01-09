@@ -139,10 +139,10 @@ body{
   width:100%;
 }
 #appScroll{
-  height:100vh;
-  overflow-y:auto;           /* only this scrolls */
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:none;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
 }
 
 /* --- Keep the action buttons reachable when an image is shown --- */
@@ -1341,6 +1341,34 @@ appScroll.addEventListener("touchmove", e => {
     if (scroller.scrollTop <= 0 && pullingDown) {
       e.preventDefault();
     }
+  }, { passive: false });
+})();
+
+  // --- Fix iPad landscape viewport + prevent pull-to-refresh reliably ---
+(() => {
+  const scroller = document.getElementById("appScroll");
+  if (!scroller) return;
+
+  function setScrollerHeight(){
+    const h = (window.visualViewport && window.visualViewport.height)
+      ? Math.round(window.visualViewport.height)
+      : window.innerHeight;
+    scroller.style.height = h + "px";
+  }
+
+  setScrollerHeight();
+  window.addEventListener("resize", setScrollerHeight);
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", setScrollerHeight);
+
+  let startY = 0;
+  scroller.addEventListener("touchstart", (e) => {
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  scroller.addEventListener("touchmove", (e) => {
+    const y = e.touches[0].clientY;
+    const pullingDown = y > startY;
+    if (scroller.scrollTop <= 0 && pullingDown) e.preventDefault();
   }, { passive: false });
 })();
 
