@@ -131,6 +131,10 @@
   object-fit:cover;
   display:block;
 }
+/* Stop iPad pull-to-refresh resetting the test */
+#appScroll {
+  overscroll-behavior-y: contain;
+}
   </style>
 </head>
 <body>
@@ -1293,6 +1297,25 @@ window.addEventListener("touchmove", (e) => {
   if (st === 0 && e.touches[0].clientY > 50) {
     e.preventDefault();
   }
+}, { passive: false });
+
+  const appScroll = document.getElementById("appScroll");
+
+let lastY = 0;
+
+appScroll.addEventListener("touchstart", e => {
+  lastY = e.touches[0].clientY;
+}, { passive: false });
+
+appScroll.addEventListener("touchmove", e => {
+  const currentY = e.touches[0].clientY;
+  const scrollingDown = currentY > lastY;
+
+  if (appScroll.scrollTop === 0 && scrollingDown) {
+    e.preventDefault();   // stops iPad pull-to-refresh
+  }
+
+  lastY = currentY;
 }, { passive: false });
   
 </script>
