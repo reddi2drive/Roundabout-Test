@@ -1282,6 +1282,22 @@ newAttemptBtn.addEventListener("click", () => {
 
 loadStats();
 show(startScreen);
+
+  let r2d_lastScrollTop = 0;
+
+window.addEventListener("touchstart", () => {
+  r2d_lastScrollTop = document.scrollingElement.scrollTop;
+});
+
+window.addEventListener("touchmove", (e) => {
+  const st = document.scrollingElement.scrollTop;
+
+  // At top of page and pulling down = block refresh
+  if (st === 0 && e.touches[0].clientY > 50) {
+    e.preventDefault();
+  }
+}, { passive: false });
+  
 </script>
 </body>
 </html>
