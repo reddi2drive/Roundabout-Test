@@ -185,6 +185,19 @@ body{
   margin: 0 1px;
   color: rgba(255,255,255,.35);
 }  
+   /* Shrink all question images */
+.question img {
+  max-width: 50%;
+  height: auto;
+  display: block;
+  margin: 10px auto 14px auto;
+}
+   /* iPad & tablet landscape fix */
+@media (min-width: 768px) {
+  .question img {
+    max-width: 55%;
+  }
+}
 
 
 .review-image{display:block; margin:10px auto;}
